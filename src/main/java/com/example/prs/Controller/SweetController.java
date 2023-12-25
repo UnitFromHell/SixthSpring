@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Controller
-@RequestMapping("/people/sweet")
+@RequestMapping("/sweet")
 public class SweetController {
     private com.example.prs.repositories.SweetRepository sweetRepository;
 
@@ -26,19 +26,19 @@ public class SweetController {
     @GetMapping()
     public String index(Model model) {
         model.addAttribute("sweets", sweetRepository.findAll());
-        return "/people/sweet/index";
+        return "/sweet/index";
     }
 
     @GetMapping("/new")
     public String showAddForm(Sweet sweet) {
-        return "people/sweet/new";
+        return "sweet/new";
     }
 
     @GetMapping("/edit/{id}")
     public String showUpdateForm(@PathVariable("id") long id, Model model) {
         Sweet sweet = sweetRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Invalid strawberry Id: " + id));
         model.addAttribute("sweet", sweet);
-        return "people/sweet/edit";
+        return "sweet/edit";
     }
 
     @GetMapping("/delete/{id}")
@@ -48,32 +48,32 @@ public class SweetController {
             sweetRepository.delete(sweet);
         }
         catch (MethodArgumentTypeMismatchException e) {
-            return "redirect:/people/sweet";
+            return "redirect:/sweet";
 
         }
         model.addAttribute("sweets", sweetRepository.findAll());
-        return "redirect:/people/sweet";
+        return "redirect:/sweet";
     }
 
     @PostMapping("/addsweet")
     public String addPerson(@Valid Sweet sweet, BindingResult result, Model model) {
         if (result.hasErrors()) {
-            return "people/sweet/new";
+            return "sweet/new";
         }
         sweetRepository.save(sweet);
         model.addAttribute("sweets", sweetRepository.findAll());
-        return "redirect:/people/sweet";
+        return "redirect:/sweet";
     }
 
     @PostMapping("/{id}")
     public String update(@PathVariable("id") long id, @Valid Sweet sweet, BindingResult result, Model model) {
         if (result.hasErrors()) {
             sweet.setId(id);
-            return "people/sweet/edit";
+            return "sweet/edit";
         }
         sweetRepository.save(sweet);
         model.addAttribute("sweets", sweetRepository.findAll());
-        return "people/sweet/index";
+        return "sweet/index";
     }
 
     @GetMapping("/search")
@@ -88,6 +88,6 @@ public class SweetController {
             }
         }
         model.addAttribute("sweets", sortSweets);
-        return "people/sweet/index";
+        return "sweet/index";
     }
 }

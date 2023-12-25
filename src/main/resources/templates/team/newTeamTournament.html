@@ -14,13 +14,22 @@
                     <a class="nav-link" href="/people">Люди</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="/people/animal">Животные</a>
+                     <a class="nav-link" href="/animal">Животные</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="/people/fish">Рыбы</a>
+                    <a class="nav-link" href="/fish">Рыбы</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="/people/sweet">Конфеты</a>
+                    <a class="nav-link" href="/sweet">Конфеты</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/typeanimal">Виды</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/passport">Паспорт</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/tournament">Турниры</a>
                 </li>
 
             </ul>
@@ -28,24 +37,19 @@
     </div>
 </nav>
 <div class="container mt-5">
-    <h1>Добавление команды</h1>
-    <form th:method="POST" th:action="@{/people/team/addteam}" th:object="${team}">
+    <h1>Добавление</h1>
+    <form th:method="POST" th:action="@{/team/addteamTournament}">
         <div class="form-group">
-            <label for="name">Введите название</label>
-            <input type="text" th:field="*{name}" class="form-control" id="name">
-            <div style="color:red" th:if="${#fields.hasErrors('name')}" th:errors="*{name}">Name Error</div>
+            <label for="teamSelect">Выберите команду:</label>
+            <select class="form-control" id="teamSelect" name="team">
+                <option th:each="team : ${teams}" th:value="${team.id}" th:text="${team.name}"></option>
+            </select>
         </div>
-
         <div class="form-group">
-            <label for="years">Введите тип</label>
-            <input type="text" th:field="*{type}" class="form-control" id="years">
-            <div style="color:red" th:if="${#fields.hasErrors('type')}" th:errors="*{type}">type Error</div>
-        </div>
-
-        <div class="form-group">
-            <label for="type">Введите лигу</label>
-            <input type="text" th:field="*{league}" class="form-control" id="type">
-            <div style="color:red" th:if="${#fields.hasErrors('league')}" th:errors="*{league}">Type Error</div>
+            <label for="tournamentSelect">Выберите турнир:</label>
+            <select class="form-control" id="tournamentSelect" name="tournament">
+                <option th:each="tournament : ${tournaments}" th:value="${tournament.id}" th:text="${tournament.name}"></option>
+            </select>
         </div>
         <button type="submit" class="btn btn-primary">Добавить!</button>
     </form>

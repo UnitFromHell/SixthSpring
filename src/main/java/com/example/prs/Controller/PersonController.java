@@ -1,7 +1,10 @@
 package com.example.prs.Controller;
 
 
+import com.example.prs.models.Passport;
 import com.example.prs.models.Person;
+import com.example.prs.repositories.PassportRepository;
+import com.example.prs.repositories.PersonRepository;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -16,12 +19,10 @@ import java.util.List;
 @Controller
 @RequestMapping("/people")
 public class PersonController {
-    private com.example.prs.repositories.PersonRepository personRepository;
-
     @Autowired
-    public PersonController(com.example.prs.repositories.PersonRepository personRepository) {
-        this.personRepository = personRepository;
-    }
+    private PersonRepository personRepository;
+    @Autowired
+    private PassportRepository passportRepository;
 
     @GetMapping()
     public String index(Model model) {
@@ -30,7 +31,9 @@ public class PersonController {
     }
 
     @GetMapping("/new")
-    public String showAddForm(Person person) {
+    public String showAddForm(Person person, Model model) {
+        List<Passport> passports = passportRepository.findAll();
+        model.addAttribute("passports", passports);
         return "people/new";
     }
 
@@ -38,6 +41,8 @@ public class PersonController {
     public String showUpdateForm(@PathVariable("id") long id, Model model) {
         Person person = personRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Invalid strawberry Id: " + id));
         model.addAttribute("person", person);
+        List<Passport> passports = passportRepository.findAll();
+        model.addAttribute("passports", passports);
         return "people/edit";
     }
 
@@ -47,8 +52,7 @@ public class PersonController {
             Person person = personRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Invalid strawberry Id: " + id));
             personRepository.delete(person);
         } catch (MethodArgumentTypeMismatchException e) {
-            // Обработка ошибки преобразования типа
-            // Можно просто проигнорировать ошибку и перенаправить на страницу с людьми
+
             return "redirect:/people";
         }
         model.addAttribute("people", personRepository.findAll());
@@ -58,24 +62,81 @@ public class PersonController {
     @PostMapping("/addperson")
     public String addPerson(@Valid Person person, BindingResult result, Model model) {
         if (result.hasErrors()) {
+            List<Passport> passports = passportRepository.findAll();
+            model.addAttribute("passports", passports);
             return "people/new";
         }
-        personRepository.save(person);
-        model.addAttribute("people", personRepository.findAll());
-        return "people/index";
+
+        try {
+            Passport selectedPassport = person.getPassport();
+            if (selectedPassport != null && personRepository.existsByPassport(selectedPassport)) {
+                result.rejectValue("passport", "error.person", "Данный паспорт уже присвоен другому человеку");
+                return "people/new";
+            }
+
+            if (personRepository.existsByLogin(person.getLogin())) {
+                result.rejectValue("login", "error.person", "Данный логин уже существует");
+                return "people/new";
+            }
+
+            if (personRepository.existsByEmail(person.getEmail())) {
+                result.rejectValue("email", "error.person", "Данный email уже существует");
+                return "people/new";
+            }
+
+            personRepository.save(person);
+            model.addAttribute("people", personRepository.findAll());
+            return "people/index";
+        } catch (Exception e) {
+            result.reject("error.person", "Произошла ошибка при добавлении человека");
+            return "people/new";
+        }
     }
 
     @PostMapping("/{id}")
     public String update(@PathVariable("id") long id, @Valid Person person, BindingResult result, Model model) {
+        List<Passport> passports = passportRepository.findAll();
+        model.addAttribute("passports", passports);
+
         if (result.hasErrors()) {
             person.setId(id);
             return "people/edit";
         }
+
+        Person existingPerson = personRepository.findById(id).orElse(null);
+        Passport selectedPassport = person.getPassport();
+
+        if (existingPerson != null && selectedPassport != null && existingPerson.getPassport() != null && existingPerson.getPassport().equals(selectedPassport)) {
+            person.setPassport(existingPerson.getPassport());
+        } else {
+            if (selectedPassport != null && personRepository.existsByPassport(selectedPassport)) {
+                result.rejectValue("passport", "error.person", "Данный паспорт уже присвоен другому человеку");
+                return "people/edit";
+            }
+        }
+
+        if (existingPerson != null && existingPerson.getLogin().equals(person.getLogin())) {
+            person.setLogin(existingPerson.getLogin());
+        } else {
+            if (personRepository.existsByLogin(person.getLogin())) {
+                result.rejectValue("login", "error.person", "Данный логин уже существует");
+                return "people/edit";
+            }
+        }
+
+        if (existingPerson != null && existingPerson.getEmail().equals(person.getEmail())) {
+            person.setEmail(existingPerson.getEmail());
+        } else {
+            if (personRepository.existsByEmail(person.getEmail())) {
+                result.rejectValue("email", "error.person", "Данный email уже существует");
+                return "people/edit";
+            }
+        }
+
         personRepository.save(person);
         model.addAttribute("persons", personRepository.findAll());
         return "redirect:/people";
     }
-
     @GetMapping("/search")
     public String search(@RequestParam("name") String name, Model model) {
         List<Person> persons = personRepository.findAll();

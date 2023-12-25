@@ -5,6 +5,8 @@ import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
+import java.util.Set;
+
 @Entity
 @Table(name = "Person")
 public class Person {
@@ -17,27 +19,37 @@ public class Person {
 
     @Min(value = 0, message = "Возраст должен быть не меньше 0")
     private int age;
+    @Column(unique = true)
     @NotBlank(message = "Емейл не может быть пустым")
     @Size(min = 2, max = 30, message = "Длина типа минимум 2 символа и максимум 30 символов")
     private String email;
 
+    @Column(unique = true)
+    @NotBlank(message = "Логин не может быть пустым")
+    private String login;
+    @NotBlank(message = "Пароль не может быть пустым")
+    private String password;
+
+    @OneToOne(optional = true, cascade = CascadeType.ALL)
+    @JoinColumn(name="passport_id", unique = true)
+    private Passport passport;
+
+
+    @ElementCollection(targetClass = Role.class, fetch = FetchType.EAGER)
+    @CollectionTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"))
+    @Enumerated(EnumType.STRING)
+    private Set<Role> roles;
     public Person(){
     }
-public Person(long  id, String name,  String email, int age) {
+public Person(long  id, String name,  String email, int age, String login, String password) {
     this.id = id;
     this.name = name;
-
     this.email = email;
     this.age = age;
+    this.login = login;
+    this.password = password;
 }
-//    public Person(int id, String name, String surname, String patronic, String email, int age) {
-//        this.id = id;
-//        this.name = name;
-//        this.surname = surname;
-//        this.patronic = patronic;
-//        this.email = email;
-//        this.age = age;
-//    }
+
     public long getId() {
         return id;
     }
@@ -66,16 +78,36 @@ public Person(long  id, String name,  String email, int age) {
     public void setAge(int age) {
         this.age = age;
     }
-//    public String getSurname() {
-//        return surname;
-//    }
-//    public void setSurname(String surname) {
-//        this.surname = surname;
-//    }
-//    public String getPatronic() {
-//        return patronic;
-//    }
-//    public void setPatronic(String patronic) {
-//        this.patronic = patronic;
-//    }
+
+    public Passport getPassport() {
+        return passport;
+    }
+
+    public void setPassport(Passport passport) {
+        this.passport = passport;
+    }
+    public String getLogin() {
+        return login;
+    }
+
+    public void setLogin(String login) {
+        this.login = login;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public Set<Role> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(Set<Role> roles) {
+        this.roles = roles;
+    }
+
 }

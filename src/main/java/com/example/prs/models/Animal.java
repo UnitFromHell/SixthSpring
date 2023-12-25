@@ -20,8 +20,9 @@ public class Animal {
     @Min(value = 0, message = "Возраст должен быть не меньше 0")
     private int years;
 
-    @NotBlank(message = "Тип не может быть пустым")
-    private String type;
+    @ManyToOne
+    @JoinColumn(name = "type_animal_id")
+    private TypeAnimal typeAnimal;
 
 
 
@@ -29,11 +30,11 @@ public class Animal {
     public Animal(){
 
     }
-    public Animal(Long id, String name, int years, String type) {
+    public Animal(Long id, String name, int years, TypeAnimal typeAnimal) {
         this.id = id;
         this.name = name;
         this.years = years;
-        this.type = type;
+        this.typeAnimal = typeAnimal;
     }
 
     public Long getId() {
@@ -54,10 +55,12 @@ public class Animal {
     public void setYears(int years) {
         this.years = years;
     }
-    public String getType() {
-        return type;
+
+    public TypeAnimal getTypeAnimal() {
+        return typeAnimal;
     }
-    public void setType(String type) {
-        this.type = type;
+
+    public void setTypeAnimal(TypeAnimal typeAnimal) {
+        this.typeAnimal = typeAnimal;
     }
 }

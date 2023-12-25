@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Controller
-@RequestMapping("/people/fish")
+@RequestMapping("/fish")
 public class FishController {
     private com.example.prs.repositories.FishRepository fishRepository;
 
@@ -27,19 +27,19 @@ public class FishController {
     @GetMapping()
     public String index(Model model) {
         model.addAttribute("fishs", fishRepository.findAll());
-        return "/people/fish/index";
+        return "/fish/index";
     }
 
     @GetMapping("/new")
     public String showAddForm(Fish fish) {
-        return "people/fish/new";
+        return "fish/new";
     }
 
     @GetMapping("/edit/{id}")
     public String showUpdateForm(@PathVariable("id") long id, Model model) {
         Fish fish = fishRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Invalid strawberry Id: " + id));
         model.addAttribute("fish", fish);
-        return "people/fish/edit";
+        return "fish/edit";
     }
 
     @GetMapping("/delete/{id}")
@@ -49,33 +49,33 @@ public class FishController {
             fishRepository.delete(fish);
         }
         catch (MethodArgumentTypeMismatchException e) {
-            return "redirect:/people/fish";
+            return "redirect:/fish";
 
         }
 
         model.addAttribute("fishs", fishRepository.findAll());
-        return "redirect:/people/fish";
+        return "redirect:/fish";
     }
 
     @PostMapping("/addfish")
     public String addPerson(@Valid Fish fish, BindingResult result, Model model) {
         if (result.hasErrors()) {
-            return "people/fish/new";
+            return "fish/new";
         }
         fishRepository.save(fish);
         model.addAttribute("fishs", fishRepository.findAll());
-        return "redirect:/people/fish";
+        return "redirect:/fish";
     }
 
     @PostMapping("/{id}")
     public String update(@PathVariable("id") long id, @Valid Fish fish, BindingResult result, Model model) {
         if (result.hasErrors()) {
             fish.setId(id);
-            return "people/fish/edit";
+            return "fish/edit";
         }
         fishRepository.save(fish);
         model.addAttribute("fishs", fishRepository.findAll());
-        return "people/fish/index";
+        return "fish/index";
     }
 
     @GetMapping("/search")
@@ -92,6 +92,6 @@ public class FishController {
             }
             model.addAttribute("animals", sortFishs);
         }
-        return "/people/animal/index";
+        return "/animal/index";
     }
 }

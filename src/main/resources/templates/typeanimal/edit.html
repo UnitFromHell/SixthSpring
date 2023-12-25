@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Update animal</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<nav class="navbar navbar-expand-lg bg-body-tertiary">
+    <div class="container-fluid">
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" href="/people">Люди</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/animal">Животные</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/fish">Рыбы</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/sweet">Конфеты</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/team">Команды</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/passport">Паспорт</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/tournament">Турниры</a>
+                </li>
+
+            </ul>
+        </div>
+    </div>
+</nav>
+<div class="container mt-5">
+    <h1>Изменение <span th:text="${typeanimal.getName()}"/> </h1>
+    <form th:method="POST" th:action="@{/typeanimal/{id}(id=${typeanimal.getId()})}" th:object="${typeanimal}">
+        <div class="form-group"> <label for="name">Введите вид</label> <input type="text" th:field="*{name}" class="form-control" id="name"><div style="color:red" th:if="${#fields.hasErrors('name')}" th:errors="*{name}">Name Error</div></div>
+        <div class="form-group">
+            <label for="surname">Введите описание</label>
+            <input type="text" th:field="*{description}" class="form-control" id="surname">
+
+            <div style="color:red" th:if="${#fields.hasErrors('description')}" th:errors="*{description}">description Error</div>
+        </div>
+
+
+
+        <button type="submit" class="btn btn-primary">Изменить!</button>
+    </form>
+</div>
+
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

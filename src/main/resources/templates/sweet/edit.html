@@ -14,13 +14,22 @@
                     <a class="nav-link" href="/people">Люди</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="/people/animal">Животные</a>
+                    <a class="nav-link" href="/animal">Животные</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="/people/fish">Рыбы</a>
+                    <a class="nav-link" href="/fish">Рыбы</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="/people/team">Команды</a>
+                    <a class="nav-link" href="/team">Команды</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/typeanimal">Виды</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/passport">Паспорт</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/tournament">Турниры</a>
                 </li>
 
             </ul>
@@ -29,7 +38,7 @@
 </nav>
 <div class="container mt-5">
     <h1>Изменение <span th:text="${sweet.getName()}"/> </h1>
-    <form th:method="POST" th:action="@{/people/sweet/{id}(id=${sweet.getId()})}" th:object="${sweet}">
+    <form th:method="POST" th:action="@{/sweet/{id}(id=${sweet.getId()})}" th:object="${sweet}">
         <div class="form-group"> <label for="name">Введите название</label> <input type="text" th:field="*{name}" class="form-control" id="name"><div style="color:red" th:if="${#fields.hasErrors('name')}" th:errors="*{name}">Name Error</div></div>
         <div class="form-group">
             <label for="surname">Введите количество</label>

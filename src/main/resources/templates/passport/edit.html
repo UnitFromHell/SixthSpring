@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Update passport</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<nav class="navbar navbar-expand-lg bg-body-tertiary">
+    <div class="container-fluid">
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" href="/people">Люди</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/animal">Животные</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/fish">Рыбы</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/sweet">Конфеты</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/team">Команды</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/typeanimal">Виды</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/tournament">Турниры</a>
+                </li>
+
+            </ul>
+        </div>
+    </div>
+</nav>
+<div class="container mt-5">
+    <h1>Изменение <span th:text="Паспорта"/> </h1>
+    <form class="container" th:action="@{/passport/{id}(id=${passport.id})}" th:object="${passport}" th:method="POST">
+        <div class="mb-3">
+            <label for="series" class="form-label">Введите Серию</label>
+            <input type="text" class="form-control" id="series" th:field="*{series}">
+            <span th:if="${#fields.hasErrors('series')}" th:errors="*{series}" ></span>
+        </div>
+        <div class="mb-3">
+            <label for="number" class="form-label">Введите Номер</label>
+            <input type="text" class="form-control" id="number" th:field="*{number}">
+            <span th:if="${#fields.hasErrors('number')}" th:errors="*{number}" ></span>
+        </div>
+        <button type="submit" class="btn btn-primary">Изменить</button>
+    </form>
+</div>
+
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

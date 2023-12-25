@@ -6,6 +6,8 @@ import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
+import java.util.List;
+
 @Entity
 @Table(name = "Team")
 public class Team {
@@ -22,13 +24,20 @@ public class Team {
     @Size(min = 2, max = 30, message = "Длина лиги минимум 2 символа и максимум 30 символов")
     private String league;
 
+    @ManyToMany
+    @JoinTable(name="tournamentInTeam",
+            joinColumns=@JoinColumn(name="team_id"),
+            inverseJoinColumns=@JoinColumn(name="tournament_id"))
+    private List<Tournament> tournaments;
+
     public Team(){
     }
-    public Team(long id, String name, String type, String league) {
+    public Team(long id, String name, String type, String league, List<Tournament> tournaments) {
         this.id = id;
         this.name = name;
         this.type = type;
         this.league = league;
+        this.tournaments = tournaments;
     }
     public long getId() {
         return id;
@@ -53,5 +62,13 @@ public class Team {
     }
     public void setLeague(String league) {
         this.league = league;
+    }
+
+    public List<Tournament> getTournaments() {
+        return tournaments;
+    }
+
+    public void setTournaments(List<Tournament> tournaments) {
+        this.tournaments = tournaments;
     }
 }

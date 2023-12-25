@@ -2,6 +2,7 @@ package com.example.prs.Controller;
 
 
 import com.example.prs.models.Team;
+import com.example.prs.models.Tournament;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -14,9 +15,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Controller
-@RequestMapping("/people/team")
+@RequestMapping("/team")
 public class TeamController {
+    @Autowired
     private com.example.prs.repositories.TeamRepository teamRepository;
+    @Autowired
+    private com.example.prs.repositories.TournamentRepository tournamentRepository;
 
     @Autowired
     public TeamController(com.example.prs.repositories.TeamRepository teamRepository) {
@@ -26,19 +30,20 @@ public class TeamController {
     @GetMapping()
     public String index(Model model) {
         model.addAttribute("teams", teamRepository.findAll());
-        return "/people/team/index";
+        model.addAttribute("tournaments", tournamentRepository.findAll());
+        return "/team/index";
     }
 
     @GetMapping("/new")
     public String showAddForm(Team team) {
-        return "people/team/new";
+        return "team/new";
     }
 
     @GetMapping("/edit/{id}")
     public String showUpdateForm(@PathVariable("id") long id, Model model) {
         Team team = teamRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Invalid strawberry Id: " + id));
         model.addAttribute("team", team);
-        return "people/team/edit";
+        return "team/edit";
     }
 
     @GetMapping("/delete/{id}")
@@ -48,32 +53,38 @@ public class TeamController {
             teamRepository.delete(team);
         }
         catch (MethodArgumentTypeMismatchException e) {
-            return "redirect:/people/team";
+            return "redirect:/team";
 
         }
         model.addAttribute("teams", teamRepository.findAll());
-        return "redirect:/people/team";
+        return "redirect:/team";
     }
 
     @PostMapping("/addteam")
     public String addPerson(@Valid Team team, BindingResult result, Model model) {
         if (result.hasErrors()) {
-            return "people/team/new";
+            return "team/new";
         }
         teamRepository.save(team);
         model.addAttribute("teams", teamRepository.findAll());
-        return "redirect:/people/team";
+        return "redirect:/team";
     }
 
     @PostMapping("/{id}")
     public String update(@PathVariable("id") long id, @Valid Team team, BindingResult result, Model model) {
         if (result.hasErrors()) {
             team.setId(id);
-            return "people/team/edit";
+            return "team/edit";
         }
-        teamRepository.save(team);
+
+        Team existingTeam = teamRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Недопустимый идентификатор команды: " + id));
+
+        existingTeam.setName(team.getName());
+
+        teamRepository.save(existingTeam);
+
         model.addAttribute("teams", teamRepository.findAll());
-        return "people/team/index";
+        return "team/index";
     }
 
     @GetMapping("/search")
@@ -88,6 +99,27 @@ public class TeamController {
             }
         }
         model.addAttribute("teams", sortTeam);
-        return "people/team/index";
+        return "team/index";
     }
+
+
+    @GetMapping("/new2")
+    public String showAddForm2(Model model) {
+        model.addAttribute("team", new Team());
+        model.addAttribute("tournament", new Tournament());
+        model.addAttribute("teams", teamRepository.findAll());
+        model.addAttribute("tournaments", tournamentRepository.findAll());
+        return "team/newTeamTournament";
+    }
+        @PostMapping("/addteamTournament")
+    public String addteamTournament(@RequestParam Long team, @RequestParam Long tournament,  Model model) {
+
+            Team foundTeam = teamRepository.findById(team).orElseThrow();
+            Tournament foundTournament = tournamentRepository.findById(tournament).orElseThrow();
+            foundTeam.getTournaments().add(foundTournament);
+            teamRepository.save(foundTeam);
+
+        return "redirect:/team";
+    }
+
 }

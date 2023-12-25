@@ -2,7 +2,7 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Add Fish</title>
+    <title>Add Animal</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
 </head>
 <body>
@@ -14,22 +14,31 @@
                     <a class="nav-link" href="/people">Люди</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="/people/animal">Животные</a>
+                   <a class="nav-link" href="/fish">Рыбы</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/sweet">Конфеты</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/team">Команды</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/typeanimal">Виды</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/passport">Паспорт</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/tournament">Турниры</a>
                 </li>
 
-                <li class="nav-item">
-                    <a class="nav-link" href="/people/sweet">Конфеты</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="/people/team">Команды</a>
-                </li>
             </ul>
         </div>
     </div>
 </nav>
 <div class="container mt-5">
-    <h1>Добавление рыбы</h1>
-    <form th:method="POST" th:action="@{/people/fish/addfish}" th:object="${fish}">
+    <h1>Добавление животного</h1>
+    <form th:method="POST" th:action="@{/animal/addanimal}" th:object="${animal}">
         <div class="form-group">
             <label for="name">Введите имя</label>
             <input type="text" th:field="*{name}" class="form-control" id="name">
@@ -43,9 +52,11 @@
         </div>
 
         <div class="form-group">
-            <label for="type">Введите вид</label>
-            <input type="text" th:field="*{type}" class="form-control" id="type">
-            <div style="color:red" th:if="${#fields.hasErrors('type')}" th:errors="*{type}">Type Error</div>
+            <label for="type">Введите вид и описание</label>
+            <select class="form-control" id="type" th:field="*{typeAnimal}">
+                <option th:each="typeanimal : ${typeanimals}" th:value="${typeanimal.id}" th:text="${typeanimal.name + ' ' + typeanimal.description}"></option>
+            </select>
+            <div style="color:red" th:if="${#fields.hasErrors('typeAnimal')}" th:errors="*{typeAnimal}">Type Error</div>
         </div>
         <button type="submit" class="btn btn-primary">Добавить!</button>
     </form>
