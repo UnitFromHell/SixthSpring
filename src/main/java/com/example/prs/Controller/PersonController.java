@@ -3,10 +3,12 @@ package com.example.prs.Controller;
 
 import com.example.prs.models.Passport;
 import com.example.prs.models.Person;
+import com.example.prs.models.Role;
 import com.example.prs.repositories.PassportRepository;
 import com.example.prs.repositories.PersonRepository;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -15,9 +17,11 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 @Controller
 @RequestMapping("/people")
+@PreAuthorize("hasAuthority('ADMIN')")
 public class PersonController {
     @Autowired
     private PersonRepository personRepository;
@@ -60,7 +64,9 @@ public class PersonController {
     }
 
     @PostMapping("/addperson")
-    public String addPerson(@Valid Person person, BindingResult result, Model model) {
+    public String addPerson(@Valid Person person, BindingResult result, Model model, @RequestParam("roles") Set<Role> roles) {
+        List<Passport> passports2 = passportRepository.findAll();
+        model.addAttribute("passports", passports2);
         if (result.hasErrors()) {
             List<Passport> passports = passportRepository.findAll();
             model.addAttribute("passports", passports);
@@ -84,6 +90,7 @@ public class PersonController {
                 return "people/new";
             }
 
+            person.setRoles(roles); // Установка выбранных ролей для пользователя
             personRepository.save(person);
             model.addAttribute("people", personRepository.findAll());
             return "people/index";
@@ -94,12 +101,15 @@ public class PersonController {
     }
 
     @PostMapping("/{id}")
-    public String update(@PathVariable("id") long id, @Valid Person person, BindingResult result, Model model) {
+    public String update(@PathVariable("id") long id, @ModelAttribute("user") @Valid Person person, BindingResult result, Model model, @RequestParam("roles") Set<Role> roles) {
         List<Passport> passports = passportRepository.findAll();
         model.addAttribute("passports", passports);
 
         if (result.hasErrors()) {
             person.setId(id);
+            person.setRoles(roles);
+            List<Passport> passports2 = passportRepository.findAll();
+            model.addAttribute("passports", passports2);
             return "people/edit";
         }
 

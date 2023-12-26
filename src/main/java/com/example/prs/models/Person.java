@@ -3,6 +3,7 @@ package com.example.prs.models;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
 import java.util.Set;
@@ -21,6 +22,7 @@ public class Person {
     private int age;
     @Column(unique = true)
     @NotBlank(message = "Емейл не может быть пустым")
+    @Pattern(regexp = "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Z|a-z]{2,6}$", message = "Некорректный формат емейла")
     @Size(min = 2, max = 30, message = "Длина типа минимум 2 символа и максимум 30 символов")
     private String email;
 

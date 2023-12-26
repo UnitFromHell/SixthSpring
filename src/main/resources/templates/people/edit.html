@@ -61,16 +61,25 @@
         </div>
         <div class="form-group">
             <label for="password">Введите пароль</label>
-            <input type="text" th:field="*{password}" class="form-control" id="password">
+            <input type="password" th:field="*{password}" class="form-control" id="password">
             <div style="color:red" th:if="${#fields.hasErrors('password')}" th:errors="*{password}">password Error</div>
         </div>
 
         <div class="mb-3">
             <label for="author" class="form-label">Введите паспорт</label>
+
             <select class="form-control" id="author" th:field="*{passport}">
+                <option value="">-- Select Passport --</option>
                 <option th:each="passport: ${passports}" th:value="${passport.id}" th:text="${passport.series+' '+passport.number}"></option>
             </select>
             <span th:if="${#fields.hasErrors('passport')}" th:errors="*{passport}" ></span>
+        </div>
+
+        <div class="form-group">
+            <label for="role">Select Role:</label>
+            <select class="form-control" id="role" th:field="*{roles}">
+                <option th:each="role: ${T(com.example.prs.models.Role).values()}" th:value="${role}" th:text="${role}"></option>
+            </select>
         </div>
 
         <button type="submit" class="btn btn-primary">Изменить!</button>

@@ -43,7 +43,7 @@
   <div class="container mb-3">
     <label for="searchInput" class="form-label">Поиск</label>
     <div class="input-group">
-      <input type="text" class="form-control" th:name="name" id="searchInput" placeholder="Введите поисковый запрос" aria-label="Поиск" aria-describedby="button-addon2">
+      <input type="text" class="form-control" th:name="name" id="searchInput" placeholder="Название команды для поиска" aria-label="Поиск" aria-describedby="button-addon2">
       <button class="btn btn-primary btn-outline-success text-dark" type="submit" id="button-addon2">Найти</button>
     </div>
   </div>
@@ -74,7 +74,7 @@
             <td class="align-middle" th:text="${team.league}"></td>
             <td>
               <from th:each="tour : ${team.getTournaments()}">
-                <p th:text="${tour.getName()}"/>
+                <p th:text="${tour.getName()}"></p>
               </from>
             </td>
             <td><a class="btn btn-link" th:href="@{/team/edit/{id}(id=${team.id})}">Редактировать</a></td>
@@ -83,9 +83,10 @@
           </tbody>
         </table>
       </div>
-      <p class="my-5"><a class="btn btn-primary" href="/team/new">Добавить</a></p>
-      <br>
-      <center><a href="/team/new2" class="button7">Отправится на турнир</a></center>
+      <div class="d-flex justify-content-between align-items-center">
+        <p class="my-5"><a class="btn btn-primary" href="/team/new">Добавить</a></p>
+        <a href="/team/new2" class="btn btn-success">Отправиться на турнир</a>
+      </div>
     </div>
   </div>
 </div>

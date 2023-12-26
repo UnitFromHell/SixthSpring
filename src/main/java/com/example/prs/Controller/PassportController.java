@@ -5,6 +5,7 @@ import com.example.prs.repositories.PassportRepository;
 import com.example.prs.repositories.PersonRepository;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 @Controller
 @RequestMapping("/passport")
+@PreAuthorize("hasAuthority('ADMIN')")
 public class PassportController {
     @Autowired
     PassportRepository passportRepository;

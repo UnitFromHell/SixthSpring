@@ -9,19 +9,19 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 @Service
-public class UserService implements UserDetailsService {
-    @Autowired
-    private PersonRepository personRepository;
+public class UserService  {
+    private final PersonRepository userRepository;
+    public UserService(PersonRepository userRepository){
+        this.userRepository = userRepository;
+    }
 
-    @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Person user = personRepository.findByLogin(username);
-        UserDetails userDetails =
-                org.springframework.security.core.userdetails.User.builder()
-                        .username(user.getLogin())
-                        .password(user.getPassword())
-                        .roles("USER")
-                        .build();
-        return userDetails;
+    public Person getUserByLogin(String login){
+        Person user = userRepository.findByLogin(login);
+        return user;
+    }
+    public Person createUser(Person user){
+        Person newUser = userRepository.save(user);
+        userRepository.flush();
+        return newUser;
     }
 }
